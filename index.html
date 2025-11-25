@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Access</title>
+    <style>
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #f0f0f0;
+            --color-accent: #ff6b6b;
+            --color-text: #ffffff;
+            --color-bg: #0a0a0a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary) 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: var(--color-accent);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .lock-screen {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
+            transition: all 0.3s ease;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input[type="password"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: normal;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: var(--color-accent);
+            color: var(--color-text);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            line-height: 1.6;
+        }
+
+        .message-box h2 {
+            color: var(--color-accent);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .audio-player {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-info {
+            margin-bottom: 20px;
+        }
+
+        .track-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .track-artist {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        .play-notice {
+            margin-top: 15px;
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .played-message {
+            display: none;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo"><img src="artworkrockthebed.png"></div>
+        <h1>Rock The Bed Preview</h1>
+        <p class="subtitle">Enter the password to unlock the song</p>
+
+        <div class="lock-screen" id="lockScreen">
+            <div class="input-group">
+                <input type="password" id="passwordInput" placeholder="Enter Password" autocomplete="off">
+            </div>
+            <button onclick="checkPassword()">Unlock Access</button>
+            <p class="error-message" id="errorMessage">❌ Incorrect password. Try again.</p>
+        </div>
+
+        <div class="content" id="content">
+            <div class="message-box">
+                <h2>Congratulations for Being Here Early 🎧</h2>
+                <p>You're one of the first to hear this track. This is our way of saying thank you for pre-saving the song.</p>
+                <p style="margin-top: 15px;">Share your thoughts with us.</p>
+            </div>
+
+            <div class="audio-player">
+                <div class="track-info">
+                    <div class="track-title">rock the bed.</div>
+                    <div class="track-artist">Flyy Armani & JLLY</div>
+                </div>
+                <audio id="audioPlayer" controls controlsList="nodownload">
+                    <source src="rockthebed.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="play-notice" id="playNotice">⚠️ You will only be able to play this track once.</p>
+                <p class="played-message" id="playedMessage">Thank you for listening! This preview has ended.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set your password here
+        const correctPassword = "BED";
+        let hasPlayed = false;
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const error = document.getElementById('errorMessage');
+            
+            if (input.value === correctPassword) {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                setupAudioPlayer();
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+                input.focus();
+                setTimeout(() => {
+                    error.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function setupAudioPlayer() {
+            const audio = document.getElementById('audioPlayer');
+            const playNotice = document.getElementById('playNotice');
+            const playedMessage = document.getElementById('playedMessage');
+
+            audio.addEventListener('play', function() {
+                if (hasPlayed) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    playNotice.style.display = 'none';
+                    playedMessage.style.display = 'block';
+                }
+            });
+
+            audio.addEventListener('ended', function() {
+                hasPlayed = true;
+                playNotice.style.display = 'none';
+                playedMessage.style.display = 'block';
+                audio.controls = false;
+            });
+        }
+    </script>
+</body>
+</html>
