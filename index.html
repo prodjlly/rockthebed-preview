@@ -57,46 +57,50 @@
         }
 
         .subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
+    color: #ffffff;   /* full white */
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);  /* helps over light areas */
+}
+
 
         .lock-screen {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 40px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    background: rgba(0, 0, 0, 0.7);        /* darker panel */
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 40px 30px;
+    border: 1px solid rgba(0, 0, 0, 0.8);
+}
 
         .input-group {
             margin-bottom: 20px;
         }
 
         input[type="password"] {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--color-text);
-            transition: all 0.3s ease;
-            text-align: center;
-            letter-spacing: 2px;
-        }
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.8);   /* much darker box */
+    color: #ffffff;                    /* bright text */
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
 
         input[type="password"]:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            background: rgba(255, 255, 255, 0.15);
-        }
+    outline: none;
+    border-color: var(--color-accent);
+    background: rgba(0, 0, 0, 0.9);
+}
 
-        input[type="password"]::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: normal;
-        }
+input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: normal;
+}
+
 
         button {
             width: 100%;
@@ -252,24 +256,44 @@
         // Set your password here
         const correctPassword = "BED";
         let hasPlayed = false;
+        
+        // Check if user has already used their listen on this browser
+        const alreadyPlayed = localStorage.getItem('exclusivePreviewPlayed') === 'true';
+
 
         function checkPassword() {
-            const input = document.getElementById('passwordInput');
-            const error = document.getElementById('errorMessage');
-            
-            if (input.value === correctPassword) {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-                setupAudioPlayer();
-            } else {
-                error.style.display = 'block';
-                input.value = '';
-                input.focus();
-                setTimeout(() => {
-                    error.style.display = 'none';
-                }, 3000);
+    const input = document.getElementById('passwordInput');
+    const error = document.getElementById('errorMessage');
+
+    if (input.value === correctPassword) {
+        if (alreadyPlayed) {
+            // Skip audio, only show end message
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            const audio = document.getElementById('audioPlayer');
+            const playNotice = document.getElementById('playNotice');
+            const playedMessage = document.getElementById('playedMessage');
+            if (audio) {
+                audio.style.display = 'none';
             }
+            playNotice.style.display = 'none';
+            playedMessage.style.display = 'block';
+            return;
         }
+
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        setupAudioPlayer();
+    } else {
+        error.style.display = 'block';
+        input.value = '';
+        input.focus();
+        setTimeout(() => {
+            error.style.display = 'none';
+        }, 3000);
+    }
+}
+
 
         // Allow Enter key to submit
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
@@ -293,11 +317,13 @@
             });
 
             audio.addEventListener('ended', function() {
-                hasPlayed = true;
-                playNotice.style.display = 'none';
-                playedMessage.style.display = 'block';
-                audio.controls = false;
-            });
+    hasPlayed = true;
+    localStorage.setItem('exclusivePreviewPlayed', 'true'); // remember across refresh
+    playNotice.style.display = 'none';
+    playedMessage.style.display = 'block';
+    audio.controls = false;
+});
+
         }
     </script>
 </body>
