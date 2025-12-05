@@ -268,12 +268,16 @@
     </div>
 
     <script>
+    // Reset old preview key from previous track (once per visitor)
+localStorage.removeItem('exclusivePreviewPlayed');
+
         // Set your password here
         const correctPassword = "JAZMIN";
         let hasPlayed = false;
 
         // Check if user has already used their listen on this browser
-        const alreadyPlayed = localStorage.getItem('exclusivePreviewPlayed') === 'true';
+        const alreadyPlayed = localStorage.getItem('exclusivePreviewPlayed_toldyouso') === 'true';
+
 
         function checkPassword() {
             const input = document.getElementById('passwordInput');
@@ -331,7 +335,7 @@
 
             audio.addEventListener('ended', function() {
                 hasPlayed = true;
-                localStorage.setItem('exclusivePreviewPlayed', 'true'); // remember across refresh
+                localStorage.setItem('exclusivePreviewPlayed_toldyouso', 'true'); // remember across refresh
                 playNotice.style.display = 'none';
                 playedMessage.style.display = 'block';
                 audio.controls = false;
